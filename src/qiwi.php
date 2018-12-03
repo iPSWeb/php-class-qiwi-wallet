@@ -71,6 +71,20 @@ class qiwi {
         }
         return $response;
     }
+    public function deleteHook(){
+        $hook = $this->getActiveHook();
+        if (!empty($hook['hookId'])){
+            $params = array(
+                'exceptions' => false,
+            );
+            $response = $this->sendRequest('payment-notifier/v1/hooks'.$hook['hookId'],$params);
+            if (!empty($response['errorCode'])){
+                return array('status' => 'error', 'errorCode' => $response['errorCode'],'message' => $response['description']);
+            }
+            return array('status' => 'success', 'message' => 'Hook deleted.');
+        }
+        return array('status' => 'fail', 'message' => 'Hook doesn\'t exists.');
+    }
     protected function getSecretKey(){
         $hook = $this->getActiveHook();
         if (!empty($hook['hookId'])){
